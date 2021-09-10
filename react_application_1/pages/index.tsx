@@ -1,6 +1,7 @@
 import { format, parseISO } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import Link from "next/link";
+import { useContext } from "react";
 
 import type { GetStaticProps } from "next";
 import type { IEpisode } from "../interfaces/episodes";
@@ -17,12 +18,16 @@ import {
   LatestEpisodes,
 } from "../styles/index";
 
+import { PlayerContext } from "../contexts/player";
+
 type HomeProps = {
   latestEpisodes: IEpisode[];
   allEpisodes: IEpisode[];
 };
 
 const Home = ({ latestEpisodes, allEpisodes }: HomeProps) => {
+  const { play } = useContext(PlayerContext);
+
   return (
     <Container>
       <LatestEpisodes>
@@ -48,7 +53,7 @@ const Home = ({ latestEpisodes, allEpisodes }: HomeProps) => {
                   <span>{episode.durationAsString}</span>
                 </EpisodeDetails>
 
-                <button type="button">
+                <button type="button" onClick={() => play(episode)}>
                   <img src="/play-green.svg" alt="Tocar episódio" />
                 </button>
               </li>

@@ -51,6 +51,28 @@ export const EmptyPlayer = styled.div`
   justify-content: center;
 `;
 
+export const CurrentEpisode = styled.div`
+  text-align: center;
+
+  img {
+    border-radius: 1.5rem;
+  }
+
+  strong {
+    display: block;
+    margin-top: 2rem;
+    font: 600 1.25rem Lexend, sans-serif;
+    line-height: 1.75rem;
+  }
+
+  span {
+    display: block;
+    margin-top: 1rem;
+    opacity: 0.6;
+    line-height: 1.5rem;
+  }
+`;
+
 export const Progress = styled.div`
   display: flex;
   align-items: center;
@@ -64,7 +86,7 @@ export const Progress = styled.div`
   }
 `;
 
-export const Slider = styled.div`
+export const SliderContainer = styled.div`
   flex: 1;
 `;
 export const EmptySlider = styled.div`
@@ -85,6 +107,15 @@ export const Buttons = styled.div`
     background: transparent;
     border: 0;
     font-size: 0;
+
+    &:disabled {
+      cursor: not-allowed;
+    }
+
+    transition: filter 0.2s;
+    &:hover:not(:disabled) {
+      filter: brightness(0.8);
+    }
   }
 `;
 
@@ -93,4 +124,8 @@ export const PlayButton = styled.button`
   height: 4rem !important;
   border-radius: 1rem !important;
   background: var(--purple-400) !important;
+
+  &:hover:not(:disabled) {
+    filter: brightness(0.95) !important;
+  }
 `;
