@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 import Image from "next/image";
 import {
@@ -8,6 +8,7 @@ import {
   EmptyPlayer,
   EmptySlider,
   Footer,
+  ToggleButton,
   PlayButton,
   Progress,
   SliderContainer,
@@ -16,11 +17,27 @@ import Slider from "rc-slider";
 
 import "rc-slider/assets/index.css";
 
-import { PlayerContext } from "../../contexts/player";
+import { usePlayer } from "../../contexts/player";
+import { convertDurationToTimeString } from "../../utils/convertDurationToTimeString";
 
 const Player = () => {
-  const { episodeList, currentEpisodeIndex, isPlaying, togglePlay } =
-    useContext(PlayerContext);
+  const [progress, setProgress] = useState(0);
+
+  const {
+    episodeList,
+    currentEpisodeIndex,
+    isPlaying,
+    hasNext,
+    hasPrevious,
+    isLooping,
+    isShuffling,
+    togglePlay,
+    playNext,
+    playPrevious,
+    toggleLoop,
+    toggleShuffle,
+    clearPlayerState,
+  } = usePlayer();
 
   const audioRef = useRef<HTMLAudioElement>(null);
 
@@ -35,6 +52,11 @@ const Player = () => {
       }
     }
   }, [isPlaying]);
+
+  const selectAudioTime = (amount: number) => {
+    audioRef.current!.currentTime = amount;
+    setProgress(amount);
+  };
 
   return (
     <Container>
@@ -60,28 +82,40 @@ const Player = () => {
         </EmptyPlayer>
       )}
 
-      <Footer empty={episode ? false : true}>
-        <Progress>
-          <span>00:00</span>
+      <Footer>
+        <Progress empty={episode ? false : true}>
+          <span>{convertDurationToTimeString(progress)}</span>
           <SliderContainer>
             {episode ? (
               <Slider
+                max={episode.duration}
+                value={progress}
                 trackStyle={{ backgroundColor: "#04d361" }}
                 railStyle={{ backgroundColor: "#9f75ff" }}
                 handleStyle={{ borderColor: "#04d361", borderWidth: 4 }}
+                onChange={selectAudioTime}
               />
             ) : (
               <EmptySlider></EmptySlider>
             )}
           </SliderContainer>
-          <span>00:00</span>
+          <span>{convertDurationToTimeString(episode?.duration ?? 0)}</span>
         </Progress>
 
         <Buttons>
-          <button type="button" disabled={!episode}>
+          <ToggleButton
+            type="button"
+            disabled={!episode || episodeList.length === 1}
+            onClick={toggleShuffle}
+            active={isShuffling}
+          >
             <img src="/shuffle.svg" alt="Embaralhar" />;
-          </button>
-          <button type="button" disabled={!episode}>
+          </ToggleButton>
+          <button
+            type="button"
+            disabled={!episode || !hasPrevious}
+            onClick={playPrevious}
+          >
             <img src="/play-previous.svg" alt="Tocar anterior" />;
           </button>
           <PlayButton disabled={!episode} onClick={() => togglePlay()}>
@@ -91,12 +125,21 @@ const Player = () => {
               <img src="/play.svg" alt="Tocar" />
             )}
           </PlayButton>
-          <button type="button" disabled={!episode}>
+          <button
+            type="button"
+            disabled={!episode || (!isShuffling && !hasNext)}
+            onClick={playNext}
+          >
             <img src="/play-next.svg" alt="Tocar Próxima" />;
           </button>
-          <button type="button" disabled={!episode}>
+          <ToggleButton
+            type="button"
+            disabled={!episode}
+            onClick={toggleLoop}
+            active={isLooping}
+          >
             <img src="/repeat.svg" alt="Repetir" />;
-          </button>
+          </ToggleButton>
         </Buttons>
       </Footer>
 
@@ -104,9 +147,18 @@ const Player = () => {
         <audio
           onPlay={() => togglePlay(true)}
           onPause={() => togglePlay(false)}
+          onEnded={() => {
+            playNext();
+            setProgress(0);
+          }}
+          onTimeUpdate={(event) => {
+            setProgress(Math.floor(event.currentTarget.currentTime));
+          }}
           ref={audioRef}
           src={episode.url}
           autoPlay
+          loop={isLooping && !isShuffling}
+          onLoadedMetadata={() => (audioRef.current!.currentTime = 0)}
         />
       )}
     </Container>

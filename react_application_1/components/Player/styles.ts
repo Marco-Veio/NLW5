@@ -1,6 +1,6 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
-import { IFooter } from "./interfaces";
+import { IProgress, IToggleButton } from "./interfaces";
 
 export const Container = styled.div`
   width: 26.5rem;
@@ -27,9 +27,8 @@ export const Container = styled.div`
   }
 `;
 
-export const Footer = styled.div<IFooter>`
+export const Footer = styled.div`
   align-self: stretch;
-  opacity: ${(props) => (props.empty ? 0.5 : 1)};
 `;
 
 export const EmptyPlayer = styled.div`
@@ -73,7 +72,9 @@ export const CurrentEpisode = styled.div`
   }
 `;
 
-export const Progress = styled.div`
+export const Progress = styled.div<IProgress>`
+  opacity: ${(props) => (props.empty ? 0.5 : 1)};
+
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -110,6 +111,7 @@ export const Buttons = styled.div`
 
     &:disabled {
       cursor: not-allowed;
+      opacity: 0.5;
     }
 
     transition: filter 0.2s;
@@ -117,6 +119,18 @@ export const Buttons = styled.div`
       filter: brightness(0.8);
     }
   }
+`;
+
+export const ToggleButton = styled.button<IToggleButton>`
+  ${(props) =>
+    props.active &&
+    css`
+      filter: invert(0.4) sepia(0.1) saturate(35) hue-rotate(95deg);
+      &:hover {
+        filter: brightness(0.6) invert(0.4) sepia(0.1) saturate(35)
+          hue-rotate(95deg) !important;
+      }
+    `}
 `;
 
 export const PlayButton = styled.button`

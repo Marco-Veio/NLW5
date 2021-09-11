@@ -1,7 +1,8 @@
 import { GetStaticPaths, GetStaticProps } from "next";
 import { format, parseISO } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import { useRouter } from "next/dist/client/router";
+import Link from "next/link";
+import Head from "next/head";
 
 import type { IEpisode } from "../../interfaces/episodes";
 
@@ -15,25 +16,34 @@ import {
   Description,
   ThumbnailContainer,
 } from "../../styles/episodes";
+import { usePlayer } from "../../contexts/player";
+import React from "react";
 
 type EpisodeProps = {
   episode: IEpisode;
 };
 
 export default function Episode({ episode }: EpisodeProps) {
+  const { play } = usePlayer();
+
   return (
     <Container>
+      <Head>
+        <title>{episode.title} | Podcastr</title>
+      </Head>
       <ThumbnailContainer>
-        <button type="button">
-          <img src="/arrow-left.svg" alt="Voltar" />
-        </button>
+        <Link href="">
+          <button type="button">
+            <img src="/arrow-left.svg" alt="Voltar" />
+          </button>
+        </Link>
         <Image
           width={700}
           height={160}
           src={episode.thumbnail}
           objectFit="cover"
         />
-        <button type="button">
+        <button type="button" onClick={() => play(episode)}>
           <img src="/play.svg" alt="Tocar episódio" />
         </button>
       </ThumbnailContainer>
