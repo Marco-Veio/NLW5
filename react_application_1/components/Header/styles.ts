@@ -8,6 +8,11 @@ export const Container = styled.header`
   padding: 2rem 4rem;
   border-bottom: 1px solid var(--gray-100);
 
+  button {
+    border: none;
+    background: transparent;
+  }
+
   p {
     margin-left: 2rem;
     padding: 0.25rem 0 0.25rem 2rem;

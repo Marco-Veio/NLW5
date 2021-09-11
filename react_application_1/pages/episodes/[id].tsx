@@ -32,7 +32,7 @@ export default function Episode({ episode }: EpisodeProps) {
         <title>{episode.title} | Podcastr</title>
       </Head>
       <ThumbnailContainer>
-        <Link href="">
+        <Link href="/">
           <button type="button">
             <img src="/arrow-left.svg" alt="Voltar" />
           </button>

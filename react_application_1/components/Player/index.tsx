@@ -36,7 +36,6 @@ const Player = () => {
     playPrevious,
     toggleLoop,
     toggleShuffle,
-    clearPlayerState,
   } = usePlayer();
 
   const audioRef = useRef<HTMLAudioElement>(null);

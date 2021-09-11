@@ -1,4 +1,8 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
+
+type IEpisode = {
+  selected: boolean;
+};
 
 export const Container = styled.div`
   padding: 0 4rem;
@@ -172,4 +176,12 @@ export const EpisodeDetails = styled.div`
       }
     }
   }
+`;
+
+export const EpisodeTitle = styled.a<IEpisode>`
+  ${(props) =>
+    props.selected &&
+    css`
+      color: var(--green-500) !important;
+    `};
 `;

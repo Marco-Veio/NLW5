@@ -16,6 +16,7 @@ import {
   Container,
   EpisodeDetails,
   LatestEpisodes,
+  EpisodeTitle,
 } from "../styles/index";
 
 import { usePlayer } from "../contexts/player";
@@ -26,9 +27,9 @@ type HomeProps = {
 };
 
 const Home = ({ latestEpisodes, allEpisodes }: HomeProps) => {
-  const { playList } = usePlayer();
+  const { playList, currentEpisodeIndex, episodeList } = usePlayer();
 
-  const episodeList = [...latestEpisodes, ...allEpisodes];
+  const episodeListToPlay = [...latestEpisodes, ...allEpisodes];
 
   return (
     <Container>
@@ -52,7 +53,13 @@ const Home = ({ latestEpisodes, allEpisodes }: HomeProps) => {
 
                 <EpisodeDetails>
                   <Link href={`/episodes/${episode.id}`}>
-                    <a>{episode.title}</a>
+                    <EpisodeTitle
+                      selected={Boolean(
+                        episodeList.length && index === currentEpisodeIndex
+                      )}
+                    >
+                      {episode.title}
+                    </EpisodeTitle>
                   </Link>
                   <p>{episode.members}</p>
                   <span>{episode.publishedAt}</span>
@@ -61,7 +68,7 @@ const Home = ({ latestEpisodes, allEpisodes }: HomeProps) => {
 
                 <button
                   type="button"
-                  onClick={() => playList(episodeList, index)}
+                  onClick={() => playList(episodeListToPlay, index)}
                 >
                   <img src="/play-green.svg" alt="Tocar episódio" />
                 </button>
@@ -99,7 +106,15 @@ const Home = ({ latestEpisodes, allEpisodes }: HomeProps) => {
                   </td>
                   <td>
                     <Link href={`/episodes/${episode.id}`}>
-                      <a>{episode.title}</a>
+                      <EpisodeTitle
+                        selected={Boolean(
+                          episodeList.length &&
+                            index + latestEpisodes.length ===
+                              currentEpisodeIndex
+                        )}
+                      >
+                        {episode.title}
+                      </EpisodeTitle>
                     </Link>
                   </td>
                   <td>{episode.members}</td>
@@ -109,7 +124,10 @@ const Home = ({ latestEpisodes, allEpisodes }: HomeProps) => {
                     <button
                       type="button"
                       onClick={() =>
-                        playList(episodeList, index + latestEpisodes.length)
+                        playList(
+                          episodeListToPlay,
+                          index + latestEpisodes.length
+                        )
                       }
                     >
                       <img src="/play-green.svg" alt="Tocar episódio" />
